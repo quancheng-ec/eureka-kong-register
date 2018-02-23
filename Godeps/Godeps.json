@@ -1,0 +1,93 @@
+{
+	"ImportPath": "eureka-kong-register",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/cenkalti/backoff",
+			"Comment": "v1.1.0-4-g2ea60e5",
+			"Rev": "2ea60e5f094469f9e65adb9cd103795b73ae743e"
+		},
+		{
+			"ImportPath": "github.com/clbanning/x2j",
+			"Comment": "1.1-4-g140ca6c",
+			"Rev": "140ca6c98b7972aa3794a97d31bdb763ec66be70"
+		},
+		{
+			"ImportPath": "github.com/franela/goreq",
+			"Rev": "bcd34c9993f899273c74baaa95e15386cd97b6e7"
+		},
+		{
+			"ImportPath": "github.com/hudl/fargo",
+			"Comment": "1.3.0-28-gd214741",
+			"Rev": "d214741d6e5ad2f824e2d1cf7a6c76fa75471ddb"
+		},
+		{
+			"ImportPath": "github.com/miekg/dns",
+			"Comment": "v1.0.4",
+			"Rev": "5364553f1ee9cddc7ac8b62dce148309c386695b"
+		},
+		{
+			"ImportPath": "github.com/op/go-logging",
+			"Comment": "v1-7-g970db52",
+			"Rev": "970db520ece77730c7e4724c61121037378659d9"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "49796115aa4b964c318aad4f3084fdb41e9aa067"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "49796115aa4b964c318aad4f3084fdb41e9aa067"
+		},
+		{
+			"ImportPath": "golang.org/x/net/bpf",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/internal/iana",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/internal/socket",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/ipv4",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/ipv6",
+			"Rev": "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1",
+			"Comment": "v1.2.1",
+			"Rev": "298b7a6a3838f79debfaee8bd3bfb2b8d779e756"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/scanner",
+			"Comment": "v1.2.1",
+			"Rev": "298b7a6a3838f79debfaee8bd3bfb2b8d779e756"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/token",
+			"Comment": "v1.2.1",
+			"Rev": "298b7a6a3838f79debfaee8bd3bfb2b8d779e756"
+		},
+		{
+			"ImportPath": "gopkg.in/gcfg.v1/types",
+			"Comment": "v1.2.1",
+			"Rev": "298b7a6a3838f79debfaee8bd3bfb2b8d779e756"
+		},
+		{
+			"ImportPath": "gopkg.in/warnings.v0",
+			"Comment": "v0.1.2",
+			"Rev": "ec4a0fea49c7b46c2aeb0b51aac55779c607e52b"
+		}
+	]
+}
