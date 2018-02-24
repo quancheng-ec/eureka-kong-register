@@ -61,7 +61,7 @@ func NewClient(c Config) (client Client) {
 	}
 }
 
-func (c *Client) request(path string, method string, body interface{}) (resp *goreq.Response) {
+func (c *Client) request(path string, method string, body interface{}, showDebug bool) (resp *goreq.Response) {
 
 	res, err := goreq.Request{
 		Uri:         c.config.Host + "/upstreams" + path,
@@ -72,10 +72,15 @@ func (c *Client) request(path string, method string, body interface{}) (resp *go
 	}.Do()
 
 	if err != nil {
+	}
+
+	if err != nil {
+		c.logger.Error(err)
 		return nil
 	}
 
 	if res.StatusCode >= 400 {
+		c.logger.Error(res.StatusCode)
 		return nil
 	}
 
@@ -88,13 +93,14 @@ func formatName(app *fargo.Application) string {
 }
 
 func (c *Client) FetchUpstream(name string) *UpstreamResObject {
-	res := c.request("/"+name, http.MethodGet, nil)
+	res := c.request("/"+name, http.MethodGet, nil, true)
 
 	if res == nil {
 		return nil
 	}
 
 	var upstream UpstreamResObject
+
 	res.Body.FromJsonTo(&upstream)
 
 	return &upstream
@@ -110,7 +116,7 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 
 		createRes := c.request("", http.MethodPost, UpstreamObject{
 			Name: upstreamName,
-		})
+		}, false)
 
 		if createRes == nil {
 			return
@@ -126,7 +132,7 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 }
 
 func (c *Client) FetchTargetsOfUpstreams(upstreamName string) (targetList []TargetResObject) {
-	req := c.request("/"+upstreamName+"/targets", http.MethodGet, nil)
+	req := c.request("/"+upstreamName+"/targets", http.MethodGet, nil, false)
 
 	if req == nil {
 		return nil
@@ -160,14 +166,14 @@ findInstance:
 		c.request("/"+upstreamName+"/targets", http.MethodPost, TargetObject{
 			Target: targetUrl,
 			Weight: 100,
-		})
+		}, false)
 
 	}
 
 	if targets != nil && len(targets) > 0 {
 		for _, t := range targets {
 			c.logger.Infof("delete unhealthy target %s", t.Target)
-			c.request("/"+upstreamName+"/targets/"+t.Id, http.MethodDelete, nil)
+			c.request("/"+upstreamName+"/targets/"+t.Id, http.MethodDelete, nil, false)
 		}
 	}
 
