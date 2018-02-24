@@ -1,24 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"eureka-kong-register/app"
 
-	"github.com/hudl/fargo"
+	"github.com/op/go-logging"
 )
 
 func main() {
+	logging.SetLevel(logging.ERROR, "fargo")
 
-	eurekaClient := fargo.NewConn("http://eureka.dev.quancheng-ec.com/eureka")
+	c := app.NewApp(app.Config{
+		KongHost:     "http://qccost-gateway-admin.dev.quancheng-ec.com",
+		PollInterval: 10,
+	})
 
-	registeredApps, err := eurekaClient.GetApps()
-
-	if err != nil {
-		fmt.Println("fetch error:", err)
-	}
-
-	for _, app := range registeredApps {
-		fmt.Println("name",app.Name)
-
-	}
+	c.Start()
 
 }
