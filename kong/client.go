@@ -7,10 +7,12 @@ import (
 
 	"github.com/franela/goreq"
 	"github.com/hudl/fargo"
+	"github.com/op/go-logging"
 )
 
 type Client struct {
 	config Config
+	logger logging.Logger
 }
 
 type Config struct {
@@ -53,6 +55,9 @@ type ResObject struct {
 func NewClient(c Config) (client Client) {
 	return Client{
 		config: c,
+		logger: logging.Logger{
+			Module: "kongClient",
+		},
 	}
 }
 
@@ -101,6 +106,8 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 	upstream := c.FetchUpstream(upstreamName)
 
 	if upstream == nil {
+		c.logger.Infof("upstream %s does not exist, now creating", upstreamName)
+
 		createRes := c.request("", http.MethodPost, UpstreamObject{
 			Name: upstreamName,
 		})
@@ -111,15 +118,15 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 
 		var upstreamRes UpstreamResObject
 		createRes.Body.FromJsonTo(&upstreamRes)
-		c.RegisterTargets(upstreamRes.Id, app.Instances)
+		c.RegisterTargets(upstreamRes.Name, app.Instances)
 	} else {
-		c.RegisterTargets(upstream.Id, app.Instances)
+		c.RegisterTargets(upstream.Name, app.Instances)
 	}
 
 }
 
-func (c *Client) FetchTargetsOfUpstreams(upstreamId string) (targetList []TargetResObject) {
-	req := c.request("/"+upstreamId+"/targets", http.MethodGet, nil)
+func (c *Client) FetchTargetsOfUpstreams(upstreamName string) (targetList []TargetResObject) {
+	req := c.request("/"+upstreamName+"/targets", http.MethodGet, nil)
 
 	if req == nil {
 		return nil
@@ -132,9 +139,10 @@ func (c *Client) FetchTargetsOfUpstreams(upstreamId string) (targetList []Target
 	return targets.Data
 }
 
-func (c *Client) RegisterTargets(upstreamId string, instances []*fargo.Instance) {
-	targets := c.FetchTargetsOfUpstreams(upstreamId)
+func (c *Client) RegisterTargets(upstreamName string, instances []*fargo.Instance) {
+	targets := c.FetchTargetsOfUpstreams(upstreamName)
 
+findInstance:
 	for _, ins := range instances {
 		targetUrl := ins.IPAddr + ":" + fmt.Sprintf("%d", ins.Port)
 
@@ -142,12 +150,14 @@ func (c *Client) RegisterTargets(upstreamId string, instances []*fargo.Instance)
 			for i, target := range targets {
 				if target.Target == targetUrl {
 					targets = append(targets[:i], targets[i+1:]...)
-					continue
+					continue findInstance
 				}
 			}
 		}
 
-		c.request("/"+upstreamId+"/targets", http.MethodPost, TargetObject{
+		c.logger.Infof("create new target %s for upstream %s", targetUrl, upstreamName)
+
+		c.request("/"+upstreamName+"/targets", http.MethodPost, TargetObject{
 			Target: targetUrl,
 			Weight: 100,
 		})
@@ -156,7 +166,8 @@ func (c *Client) RegisterTargets(upstreamId string, instances []*fargo.Instance)
 
 	if targets != nil && len(targets) > 0 {
 		for _, t := range targets {
-			c.request("/"+upstreamId+"/targets/"+t.Id, http.MethodDelete, nil)
+			c.logger.Infof("delete unhealthy target %s", t.Target)
+			c.request("/"+upstreamName+"/targets/"+t.Id, http.MethodDelete, nil)
 		}
 	}
 

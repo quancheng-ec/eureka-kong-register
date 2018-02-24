@@ -1,36 +1,35 @@
 package app
 
 import (
-	"eureka-kong-register/eureka"
-	"eureka-kong-register/kong"
-
-	"github.com/hudl/fargo"
+	"github.com/zephyrpersonal/eureka-kong-register/eureka"
+	"github.com/zephyrpersonal/eureka-kong-register/kong"
 )
 
 type Config struct {
-	KongHost     string
-	PollInterval int
+	KongHost     string   `env:"KONG_HOST" envDefault:"http://qccost-gateway-admin.dev.quancheng-ec.com"`
+	EurekaUrls   []string `env:"EUREKA_URLS" envSeparator:"|" envDefault:"http://eureka.dev.quancheng-ec.com/eureka"`
+	PollInterval int      `env:"POLL_INTERVAL" envDefault:"10"`
 }
 
 type App struct {
 	config       Config
 	KongClient   kong.Client
-	EurekaClient fargo.EurekaConnection
+	EurekaClient eureka.Client
 }
 
 func NewApp(c Config) (app App) {
 	return App{
 		config: c,
+		KongClient: kong.NewClient(kong.Config{
+			Host: c.KongHost,
+		}),
+		EurekaClient: eureka.NewClient(eureka.Config{
+			ServiceUrls:         c.EurekaUrls,
+			PollIntervalSeconds: c.PollInterval,
+		}),
 	}
 }
 
-func (a *App) init() {
-	a.KongClient = kong.NewClient(kong.Config{
-		Host: a.config.KongHost,
-	})
-}
-
 func (a *App) Start() {
-	a.init()
-	eureka.StartEurekaPolling("eureka-config.gcfg", a.config.PollInterval, a.KongClient.RegisterUpstream, "NODE")
+	a.EurekaClient.StartEurekaPolling(a.KongClient.RegisterUpstream, ".*")
 }

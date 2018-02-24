@@ -1,3 +1,0 @@
-[Eureka]
-    ServiceUrls = http://eureka.dev.quancheng-ec.com/eureka
-    PollIntervalSeconds = 3

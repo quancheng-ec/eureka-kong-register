@@ -1,8 +1,13 @@
 {
-	"ImportPath": "eureka-kong-register",
+	"ImportPath": "github.com/zephyrpersonal/eureka-kong-register",
 	"GoVersion": "go1.9",
 	"GodepVersion": "v80",
 	"Deps": [
+		{
+			"ImportPath": "github.com/caarlos0/env",
+			"Comment": "v3.2.0",
+			"Rev": "7cd7992b3bc86f920394f8de92c13900da1a46b7"
+		},
 		{
 			"ImportPath": "github.com/cenkalti/backoff",
 			"Comment": "v1.1.0-4-g2ea60e5",
