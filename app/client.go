@@ -9,6 +9,7 @@ type Config struct {
 	KongHost     string   `env:"KONG_HOST" envDefault:"http://qccost-gateway-admin.dev.quancheng-ec.com"`
 	EurekaUrls   []string `env:"EUREKA_URLS" envSeparator:"|" envDefault:"http://eureka.dev.quancheng-ec.com/eureka"`
 	PollInterval int      `env:"POLL_INTERVAL" envDefault:"10"`
+	Filter       string   `env:"FILTER" envDefault:".*"`
 }
 
 type App struct {
@@ -31,5 +32,5 @@ func NewApp(c Config) (app App) {
 }
 
 func (a *App) Start() {
-	a.EurekaClient.StartEurekaPolling(a.KongClient.RegisterUpstream, ".*")
+	a.EurekaClient.StartEurekaPolling(a.KongClient.RegisterUpstream, a.config.Filter)
 }

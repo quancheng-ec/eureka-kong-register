@@ -50,8 +50,6 @@ func NewClient(c Config) Client {
 
 func (client *Client) StartEurekaPolling(onPoll func(app *fargo.Application), filter string) {
 
-	//client, _ := fargo.NewConnFromConfigFile(location)
-
 	registeredApps, _ := client.GetApps()
 
 	if len(filter) == 0 {
