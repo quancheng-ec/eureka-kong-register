@@ -132,7 +132,7 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 }
 
 func (c *Client) FetchTargetsOfUpstreams(upstreamName string) (targetList []TargetResObject) {
-	req := c.request("/"+upstreamName+"/targets", http.MethodGet, nil, false)
+	req := c.request("/"+upstreamName+"/targets/active", http.MethodGet, nil, false)
 
 	if req == nil {
 		return nil
@@ -172,7 +172,7 @@ findInstance:
 
 	if targets != nil && len(targets) > 0 {
 		for _, t := range targets {
-			c.logger.Infof("delete unhealthy target %s", t.Target)
+			c.logger.Infof("delete unhealthy target %s on upstream %s", t.Target, upstreamName)
 			c.request("/"+upstreamName+"/targets/"+t.Id, http.MethodDelete, nil, false)
 		}
 	}
