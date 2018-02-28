@@ -1,9 +1,7 @@
 package eureka
 
 import (
-	"log"
 	"regexp"
-	"sync"
 
 	"github.com/hudl/fargo"
 )
@@ -48,8 +46,7 @@ func NewClient(c Config) Client {
 	}
 }
 
-func (client *Client) StartEurekaPolling(onPoll func(app *fargo.Application), filter string) {
-
+func (client *Client) StartEurekaPollingFetch(onPoll func(app *fargo.Application), filter string) {
 	registeredApps, _ := client.GetApps()
 
 	if len(filter) == 0 {
@@ -58,27 +55,11 @@ func (client *Client) StartEurekaPolling(onPoll func(app *fargo.Application), fi
 
 	filterReg := regexp.MustCompile(filter)
 
-	var waitGroup sync.WaitGroup
-
 	for _, app := range registeredApps {
-
-		waitGroup.Add(1)
-
 		if filterReg.MatchString(app.Name) {
-			c := make(chan struct{})
 			go func(app *fargo.Application) {
-				for update := range client.ScheduleAppUpdates(app.Name, true, c) {
-					if update.Err != nil {
-						log.Printf("Most recent request for application %q failed: %v\n", app.Name, update.Err)
-						waitGroup.Done()
-						continue
-					}
-					onPoll(update.App)
-
-				}
+				onPoll(app)
 			}(app)
 		}
 	}
-
-	waitGroup.Wait()
 }

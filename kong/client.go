@@ -80,7 +80,7 @@ func (c *Client) request(path string, method string, body interface{}, showDebug
 	}
 
 	if res.StatusCode >= 400 {
-		c.logger.Error(res.StatusCode)
+		c.logger.Errorf("request to %s failed on status: %n", path, res.StatusCode)
 		return nil
 	}
 

@@ -1,6 +1,8 @@
 package app
 
 import (
+	"time"
+
 	"github.com/zephyrpersonal/eureka-kong-register/eureka"
 	"github.com/zephyrpersonal/eureka-kong-register/kong"
 )
@@ -32,5 +34,8 @@ func NewApp(c Config) (app App) {
 }
 
 func (a *App) Start() {
-	a.EurekaClient.StartEurekaPolling(a.KongClient.RegisterUpstream, a.config.Filter)
+	for {
+		a.EurekaClient.StartEurekaPollingFetch(a.KongClient.RegisterUpstream, a.config.Filter)
+		<-time.After(time.Duration(a.config.PollInterval) * time.Second)
+	}
 }
