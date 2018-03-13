@@ -69,6 +69,7 @@ func (c *Client) request(path string, method string, body interface{}, showDebug
 		Body:        body,
 		Accept:      "application/json",
 		ContentType: "application/json",
+		ShowDebug:   showDebug,
 	}.Do()
 
 	if err != nil {
@@ -93,7 +94,7 @@ func formatName(app *fargo.Application) string {
 }
 
 func (c *Client) FetchUpstream(name string) *UpstreamResObject {
-	res := c.request("/"+name, http.MethodGet, nil, true)
+	res := c.request("/"+name, http.MethodGet, nil, false)
 
 	if res == nil {
 		return nil
@@ -116,7 +117,7 @@ func (c *Client) RegisterUpstream(app *fargo.Application) {
 
 		createRes := c.request("", http.MethodPost, UpstreamObject{
 			Name: upstreamName,
-		}, false)
+		}, true)
 
 		if createRes == nil {
 			return

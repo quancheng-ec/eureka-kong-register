@@ -55,11 +55,18 @@ func (client *Client) StartEurekaPollingFetch(onPoll func(app *fargo.Application
 
 	filterReg := regexp.MustCompile(filter)
 
+	ch := make(chan string)
+
 	for _, app := range registeredApps {
 		if filterReg.MatchString(app.Name) {
 			go func(app *fargo.Application) {
 				onPoll(app)
+				ch <- app.Name
 			}(app)
+
+			<-ch
 		}
 	}
+
+	close(ch)
 }

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"time"
 
 	"github.com/zephyrpersonal/eureka-kong-register/eureka"
@@ -35,7 +36,8 @@ func NewApp(c Config) (app App) {
 
 func (a *App) Start() {
 	for {
+		log.Println("poll start")
 		a.EurekaClient.StartEurekaPollingFetch(a.KongClient.RegisterUpstream, a.config.Filter)
-		<-time.After(time.Duration(a.config.PollInterval) * time.Second)
+		time.Sleep(time.Second * time.Duration(a.config.PollInterval))
 	}
 }
