@@ -2,6 +2,10 @@
 
 ## USAGE
 
+1.0: for Kong < 0.12
+
+2.0: for Kong >= 0.12
+
 ```bash
 
 docker run -d \
