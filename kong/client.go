@@ -90,7 +90,7 @@ func (c *Client) request(path string, method string, body interface{}, showDebug
 
 func formatName(app *fargo.Application) string {
 	reg := regexp.MustCompile("[:\\.]")
-	return reg.ReplaceAllString(app.Name, "${1}-") + ".eureka.internal"
+	return reg.ReplaceAllString(app.Name, "${1}-") + "internal"
 }
 
 func (c *Client) FetchUpstream(name string) *UpstreamResObject {

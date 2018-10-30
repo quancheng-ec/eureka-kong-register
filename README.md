@@ -1,10 +1,37 @@
 # eureka-kong-register
 
+Scheduled task that keep syncing kong upstreams with eureka instances
+
+## INTRO
+
+say we have an application with 2 instances on Eureka: (I try to describe by JSON)
+
+```json
+{ "name": "APP:1.0.0",
+  "instances": [{
+      ipAddr: 192.168.0.1
+   },{
+      ipAddr: 192.168.0.2
+   }]
+}
+```
+
+and the register will work as follow:
+
+- polling fetch http://{eurekaHost}/eureka/apps to get application and instance information
+- create a kong upstream object named "APP-1-0-0.eureka.internal" if it's not existed
+- create new targets by newly registered instance. Target's ip equals to instance's ipAddr
+- remove unregistered ones
+
+## WHICH VERSION TO USE
+
+1.x: for Kong < 0.12
+
+2.x: for Kong >= 0.12
+
 ## USAGE
 
-1.0: for Kong < 0.12
-
-2.0: for Kong >= 0.12
+### DOCKER
 
 ```bash
 
@@ -17,11 +44,11 @@ docker run -d \
   
 ```
 
-## Run Local
+### WITHOUT DOCKER
 
 first step into your $GOPATH/src and create new folders github.com/zephyrpersonal
 
-then run following in the path
+then cd to it and tun
 
 ```bash
 git clone https://github.com/quancheng-ec/eureka-kong-register.git
@@ -29,4 +56,7 @@ git clone https://github.com/quancheng-ec/eureka-kong-register.git
 go get github.com/tools/godep
 
 godep restore
+
+go build main.go
 ```
+
